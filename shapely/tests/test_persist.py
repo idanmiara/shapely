@@ -1,14 +1,14 @@
 """Persistence tests
 """
-import unittest
 import pickle
+import struct
+import unittest
+
 from shapely import wkb, wkt
 from shapely.geometry import Point
-import struct
 
 
 class PersistTestCase(unittest.TestCase):
-
     def test_pickle(self):
 
         p = Point(0.0, 0.0)
@@ -39,13 +39,13 @@ class PersistTestCase(unittest.TestCase):
         assert wkb_big_endian[0] == 0
         assert wkb_little_endian[0] == 1
         # Check that the doubles (0.5, 2.0) are in correct byte order
-        double_size = struct.calcsize('d')
-        assert wkb_big_endian[(-2 * double_size):] == struct.pack('>2d', p.x, p.y)
-        assert wkb_little_endian[(-2 * double_size):] == struct.pack('<2d', p.x, p.y)
+        double_size = struct.calcsize("d")
+        assert wkb_big_endian[(-2 * double_size) :] == struct.pack(">2d", p.x, p.y)
+        assert wkb_little_endian[(-2 * double_size) :] == struct.pack("<2d", p.x, p.y)
 
     def test_wkt(self):
         p = Point(0.0, 0.0)
         text = wkt.dumps(p)
-        assert text.startswith('POINT')
+        assert text.startswith("POINT")
         pt = wkt.loads(text)
         assert pt.equals(p)

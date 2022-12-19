@@ -2,11 +2,12 @@
 """
 
 import unittest
-from shapely.geometry import Polygon
-from shapely.errors import TopologicalError
+
+import pytest
 
 import shapely
-import pytest
+from shapely.errors import TopologicalError
+from shapely.geometry import Polygon
 
 
 class InvalidGeometriesTestCase(unittest.TestCase):

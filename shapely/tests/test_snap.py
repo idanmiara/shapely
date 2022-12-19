@@ -8,8 +8,8 @@ class Snap(unittest.TestCase):
     def test_snap(self):
 
         # input geometries
-        square = Polygon([(1,1), (2, 1), (2, 2), (1, 2), (1, 1)])
-        line = LineString([(0,0), (0.8, 0.8), (1.8, 0.95), (2.6, 0.5)])
+        square = Polygon([(1, 1), (2, 1), (2, 2), (1, 2), (1, 1)])
+        line = LineString([(0, 0), (0.8, 0.8), (1.8, 0.95), (2.6, 0.5)])
 
         square_coords = square.exterior.coords[:]
         line_coords = line.coords[:]

@@ -1,15 +1,15 @@
 import unittest
+
 from shapely.geometry import (
-    Point,
-    MultiPoint,
+    GeometryCollection,
+    LinearRing,
     LineString,
     MultiLineString,
-    LinearRing,
-    Polygon,
+    MultiPoint,
     MultiPolygon,
-    GeometryCollection,
+    Point,
+    Polygon,
 )
-
 from shapely.ops import orient
 
 
