@@ -10,7 +10,7 @@ from shapely.geometry import Point
 from shapely.geos import geos_version
 from shapely.wkb import dumps, loads, dump, load
 
-from tests.conftest import shapely20_todo
+from shapely.tests.conftest import shapely20_todo
 
 
 @pytest.fixture(scope="module")
