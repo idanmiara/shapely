@@ -1,8 +1,9 @@
 import unittest
+
 import pytest
 
 from shapely.errors import GeometryTypeError
-from shapely.geometry import Point, LineString, MultiLineString, GeometryCollection
+from shapely.geometry import GeometryCollection, LineString, MultiLineString, Point
 from shapely.ops import shared_paths
 
 
@@ -38,7 +39,7 @@ class SharedPaths(unittest.TestCase):
         g2 = LineString([(5, 0), (15, 0)])
 
         with pytest.raises(GeometryTypeError):
-            result = shared_paths(g1, g2)
+            result = shared_paths(g1, g2)  # NOQA
 
         with pytest.raises(GeometryTypeError):
-            result = shared_paths(g2, g1)
+            result = shared_paths(g2, g1)  # NOQA
