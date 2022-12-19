@@ -1,7 +1,7 @@
 from shapely.geometry import Polygon
 from shapely.validation import make_valid
 
-from tests.conftest import requires_geos_38
+from shapely.tests.conftest import requires_geos_38
 
 
 @requires_geos_38
