@@ -12,8 +12,7 @@ from numpy.testing import assert_array_equal
 import shapely
 from shapely import box, geos_version, MultiPoint, Point, STRtree
 from shapely.errors import UnsupportedGEOSVersionError
-
-from .common import (
+from shapely.tests.common import (
     assert_decreases_refcount,
     assert_increases_refcount,
     empty,
