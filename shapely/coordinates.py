@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Callable, TYPE_CHECKING, Union
 
 import numpy as np
 
@@ -18,15 +18,24 @@ __all__ = [
 ]
 
 from shapely.errors import GeometryTypeError
+from shapely.shapely_typing import (
+    MaybeArrayN,
+    MaybeGeometryArrayN,
+    MaybeGeometryArrayNLike,
+    NumpyArrayN2orN3,
+)
+
+if TYPE_CHECKING:
+    from shapely.geometry.base import BaseGeometry
 
 
 def transform(
-    geometry,
-    transformation,
+    geometry: MaybeGeometryArrayNLike,
+    transformation: Callable,
     include_z: Union[bool, int] = False,
     single_vec: bool = True,
     rebuild: bool = False,
-):
+) -> MaybeGeometryArrayN:
     """Returns a copy of a geometry array with a function applied to its coordinates.
 
     With the default of ``rebuild=False``, ``include_z=False``,
@@ -40,7 +49,7 @@ def transform(
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry: MaybeGeometryArrayNLike
     transformation : function
         A function that transforms coordinates, in ``single_vec=True`` mode:
         the function transforms a (N, 2) or (N, 3) ndarray of float64 to
@@ -138,7 +147,11 @@ def transform(
     )
 
 
-def _transform(geometry, transformation, include_z: bool = False):
+def _transform(
+    geometry: MaybeGeometryArrayNLike,
+    transformation: Callable,
+    include_z: Union[bool, int] = False,
+) -> MaybeGeometryArrayN:
     geometry_arr = np.array(geometry, dtype=np.object_)  # makes a copy
     coordinates = lib.get_coordinates(geometry_arr, include_z, False)
     new_coordinates = transformation(coordinates)
@@ -162,7 +175,11 @@ def _transform(geometry, transformation, include_z: bool = False):
     return geometry_arr
 
 
-def _transform_multi_vec(geometry, transformation, include_z: bool = False):
+def _transform_multi_vec(
+    geometry: MaybeGeometryArrayNLike,
+    transformation: Callable,
+    include_z: Union[bool, int] = False,
+) -> MaybeGeometryArrayN:
     try:
         # First we try to apply func to x, y, z vectors.
         return _transform(
@@ -181,10 +198,10 @@ def _transform_multi_vec(geometry, transformation, include_z: bool = False):
 
 
 def _transform2(
-    geometry,
-    transformation,
-    include_z: bool = False,
-):
+    geometry: "BaseGeometry",
+    transformation: Callable,
+    include_z: Union[bool, int] = False,
+) -> "BaseGeometry":
     if geometry.is_empty:
         return geometry
     if geometry.geom_type in ("Point", "LineString", "LinearRing", "Polygon"):
@@ -206,10 +223,10 @@ def _transform2(
 
 
 def _transform2_multi_vec(
-    geometry,
-    transformation,
-    include_z: bool = False,
-):
+    geometry: "BaseGeometry",
+    transformation: Callable,
+    include_z: Union[bool, int] = False,
+) -> "BaseGeometry":
     if geometry.is_empty:
         return geometry
     if geometry.geom_type in ("Point", "LineString", "LinearRing", "Polygon"):
@@ -242,7 +259,11 @@ def _transform2_multi_vec(
         raise GeometryTypeError(f"Type {geometry.geom_type!r} not recognized")
 
 
-def transform_rebuild_single_part(geometry, transformation, include_z: bool = False):
+def transform_rebuild_single_part(
+    geometry: "BaseGeometry",
+    transformation: Callable,
+    include_z: Union[bool, int] = False,
+) -> "BaseGeometry":
     """helper function for transform2, for a single part geometries"""
     if geometry.geom_type in ("Point", "LineString", "LinearRing"):
         return type(geometry)(
@@ -259,12 +280,12 @@ def transform_rebuild_single_part(geometry, transformation, include_z: bool = Fa
         return type(geometry)(shell, holes)
 
 
-def count_coordinates(geometry):
+def count_coordinates(geometry: MaybeGeometryArrayNLike) -> MaybeArrayN[int]:
     """Counts the number of coordinate pairs in a geometry array.
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry: MaybeGeometryArrayNLike
 
     Examples
     --------
@@ -281,7 +302,11 @@ def count_coordinates(geometry):
     return lib.count_coordinates(np.asarray(geometry, dtype=np.object_))
 
 
-def get_coordinates(geometry, include_z=False, return_index=False):
+def get_coordinates(
+    geometry: MaybeGeometryArrayNLike,
+    include_z: bool = False,
+    return_index: bool = False,
+) -> NumpyArrayN2orN3:
     """Gets coordinates from a geometry array as an array of floats.
 
     The shape of the returned array is (N, 2), with N being the number of
@@ -291,7 +316,7 @@ def get_coordinates(geometry, include_z=False, return_index=False):
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry: MaybeGeometryArrayNLike
     include_z : bool, default False
         If, True include the third dimension in the output. If a geometry
         has no third dimension, the z-coordinates will be NaN.
@@ -310,7 +335,7 @@ def get_coordinates(geometry, include_z=False, return_index=False):
     >>> get_coordinates(None)
     array([], shape=(0, 2), dtype=float64)
 
-    By default the third dimension is ignored:
+    By default, the third dimension is ignored:
 
     >>> get_coordinates(Point(0, 0, 0)).tolist()
     [[0.0, 0.0]]
@@ -329,7 +354,7 @@ def get_coordinates(geometry, include_z=False, return_index=False):
     )
 
 
-def set_coordinates(geometry, coordinates):
+def set_coordinates(geometry: MaybeGeometryArrayNLike, coordinates: NumpyArrayN2orN3):
     """Adapts the coordinates of a geometry array in-place.
 
     If the coordinates array has shape (N, 2), all returned geometries
@@ -345,7 +370,7 @@ def set_coordinates(geometry, coordinates):
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry: MaybeGeometryArrayNLike
     coordinates: array_like
 
     See Also
