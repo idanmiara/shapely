@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from shapely import lib
 from shapely.decorators import multithreading_enabled
 from shapely.errors import UnsupportedGEOSVersionError
@@ -10,18 +12,28 @@ __all__ = [
     "shortest_line",
 ]
 
+from shapely.shapely_typing import MaybeArray, MaybeArrayLike
+
+if TYPE_CHECKING:
+    from shapely import Geometry, GeometryCollection, LineString
+
 
 @multithreading_enabled
-def line_interpolate_point(line, distance, normalized=False, **kwargs):
+def line_interpolate_point(
+    line: MaybeArrayLike["Geometry"],
+    distance: MaybeArrayLike[float],
+    normalized=False,
+    **kwargs
+):
     """Returns a point interpolated at given distance on a line.
 
     Parameters
     ----------
-    line : Geometry or array_like
+    line : MaybeArrayLike[Geometry]
         For multilinestrings or geometrycollections, the first geometry is taken
         and the rest is ignored. This function raises a TypeError for non-linear
         geometries. For empty linear geometries, empty points are returned.
-    distance : float or array_like
+    distance : MaybeArrayLike[float]
         Negative values measure distance from the end of the line. Out-of-range
         values will be clipped to the line endings.
     normalized : bool, default False
@@ -142,8 +154,10 @@ def line_merge(line, directed=False, **kwargs):
 
 
 @multithreading_enabled
-def shared_paths(a, b, **kwargs):
-    """Returns the shared paths between geom1 and geom2.
+def shared_paths(
+    a: MaybeArrayLike["LineString"], b: MaybeArrayLike["LineString"], **kwargs
+) -> MaybeArray["GeometryCollection"]:
+    """Returns the shared paths between the two given linestring geometries.
 
     Both geometries should be linestrings or arrays of linestrings.
     A geometrycollection or array of geometrycollections is returned
@@ -154,8 +168,8 @@ def shared_paths(a, b, **kwargs):
 
     Parameters
     ----------
-    a : Geometry or array_like
-    b : Geometry or array_like
+    a : MaybeArray["LineString"]
+    b : MaybeArray["LineString"]
     **kwargs
         For other keyword-only arguments, see the
         `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
