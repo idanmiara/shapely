@@ -308,8 +308,8 @@ class BaseGeometry(shapely.Geometry):
     # ----------------------------------
 
     @property
-    def area(self):
-        """Unitless area of the geometry (float)"""
+    def area(self) -> float:
+        """Unitless area of the geometry"""
         return float(shapely.area(self))
 
     def distance(self, other):
