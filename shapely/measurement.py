@@ -291,8 +291,10 @@ def frechet_distance(a, b, densify=None, **kwargs):
 
 @requires_geos("3.6.0")
 @multithreading_enabled
-def minimum_clearance(geometry, **kwargs):
-    """Computes the Minimum Clearance distance.
+def minimum_clearance(
+    geometry: MaybeArrayLike["Geometry"], **kwargs
+) -> MaybeArray[float]:
+    """Computes the Unitless Minimum Clearance distance.
 
     A geometry's "minimum clearance" is the smallest distance by which
     a vertex of the geometry could be moved to produce an invalid geometry.
@@ -302,7 +304,7 @@ def minimum_clearance(geometry, **kwargs):
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry : MaybeArrayLike["Geometry"]
     **kwargs
         For other keyword-only arguments, see the
         `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
