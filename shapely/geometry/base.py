@@ -6,6 +6,7 @@ operations are performed in the x-y plane. Thus, geometries with
 different z values may intersect or be equal.
 """
 import re
+from typing import Tuple
 from warnings import warn
 
 import numpy as np
@@ -344,7 +345,7 @@ class BaseGeometry(shapely.Geometry):
         return shapely.boundary(self)
 
     @property
-    def bounds(self):
+    def bounds(self) -> Tuple[float, float, float, float]:
         """Returns minimum bounding region (minx, miny, maxx, maxy)"""
         return tuple(shapely.bounds(self).tolist())
 

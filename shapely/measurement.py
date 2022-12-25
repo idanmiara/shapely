@@ -1,5 +1,5 @@
 import warnings
-from typing import Optional, TYPE_CHECKING, Union
+from typing import Optional, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 
@@ -85,7 +85,9 @@ def distance(
 
 
 @multithreading_enabled
-def bounds(geometry, **kwargs):
+def bounds(
+    geometry: MaybeArrayLike["Geometry"], **kwargs
+) -> MaybeArray[Tuple[float, float, float, float]]:
     """Computes the bounds (extent) of a geometry.
 
     For each geometry these 4 numbers are returned: min x, min y, max x, max y.
