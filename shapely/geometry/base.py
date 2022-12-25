@@ -321,8 +321,8 @@ class BaseGeometry(shapely.Geometry):
         return _maybe_unpack(shapely.hausdorff_distance(self, other))
 
     @property
-    def length(self):
-        """Unitless length of the geometry (float)"""
+    def length(self) -> float:
+        """Unitless length of the geometry"""
         return float(shapely.length(self))
 
     @property
