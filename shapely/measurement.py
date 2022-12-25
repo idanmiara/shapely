@@ -21,7 +21,7 @@ __all__ = [
 from shapely.shapely_typing import MaybeArray, MaybeArrayLike
 
 if TYPE_CHECKING:
-    from shapely import MultiPolygon, Polygon
+    from shapely import Geometry, MultiPolygon, Polygon
 
 
 @multithreading_enabled
@@ -54,12 +54,14 @@ def area(
 
 
 @multithreading_enabled
-def distance(a, b, **kwargs):
-    """Computes the Cartesian distance between two geometries.
+def distance(
+    a: MaybeArrayLike["Geometry"], b: MaybeArrayLike["Geometry"], **kwargs
+) -> MaybeArray[float]:
+    """Computes the Unitless Cartesian distance between two geometries.
 
     Parameters
     ----------
-    a, b : Geometry or array_like
+    a, b : MaybeArrayLike["Geometry"]
     **kwargs
         For other keyword-only arguments, see the
         `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
