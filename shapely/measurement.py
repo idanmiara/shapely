@@ -1,5 +1,5 @@
 import warnings
-from typing import TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING, Union
 
 import numpy as np
 
@@ -198,8 +198,13 @@ def length(geometry, **kwargs):
 
 
 @multithreading_enabled
-def hausdorff_distance(a, b, densify=None, **kwargs):
-    """Compute the discrete Hausdorff distance between two geometries.
+def hausdorff_distance(
+    a: MaybeArrayLike["Geometry"],
+    b: MaybeArrayLike["Geometry"],
+    densify: Optional[MaybeArrayLike[float]] = None,
+    **kwargs
+) -> MaybeArray[float]:
+    """Compute the Unitless discrete Hausdorff distance between two geometries.
 
     The Hausdorff distance is a measure of similarity: it is the greatest
     distance between any point in A and the closest point in B. The discrete
@@ -209,8 +214,8 @@ def hausdorff_distance(a, b, densify=None, **kwargs):
 
     Parameters
     ----------
-    a, b : Geometry or array_like
-    densify : float or array_like, optional
+    a, b : MaybeArrayLike["Geometry"]
+    densify : Optional[MaybeArrayLike[float]]
         The value of densify is required to be between 0 and 1.
     **kwargs
         For other keyword-only arguments, see the
