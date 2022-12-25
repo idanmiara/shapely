@@ -1,4 +1,5 @@
 import warnings
+from typing import TYPE_CHECKING, Union
 
 import numpy as np
 
@@ -17,14 +18,21 @@ __all__ = [
     "minimum_bounding_radius",
 ]
 
+from shapely.shapely_typing import MaybeArray, MaybeArrayLike
+
+if TYPE_CHECKING:
+    from shapely import MultiPolygon, Polygon
+
 
 @multithreading_enabled
-def area(geometry, **kwargs):
-    """Computes the area of a (multi)polygon.
+def area(
+    geometry: MaybeArrayLike[Union["Polygon", "MultiPolygon"]], **kwargs
+) -> MaybeArray[float]:
+    """Computes the unitless area of a (multi)polygon.
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry : MaybeArrayLike[Union["Polygon", "MultiPolygon"]]
     **kwargs
         For other keyword-only arguments, see the
         `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
