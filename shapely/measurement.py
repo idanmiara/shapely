@@ -21,7 +21,7 @@ __all__ = [
 from shapely.shapely_typing import MaybeArray, MaybeArrayLike
 
 if TYPE_CHECKING:
-    from shapely import Geometry, MultiPolygon, Polygon
+    from shapely import Geometry, LineString, MultiLineString, MultiPolygon, Polygon
 
 
 @multithreading_enabled
@@ -167,12 +167,17 @@ def total_bounds(geometry, **kwargs):
 
 
 @multithreading_enabled
-def length(geometry, **kwargs):
-    """Computes the length of a (multi)linestring or polygon perimeter.
+def length(
+    geometry: MaybeArrayLike[
+        Union["LineString", "MultiLineString", "Polygon", "MultiPolygon"]
+    ],
+    **kwargs
+) -> MaybeArray[float]:
+    """Computes the Unitless length of a (multi)linestring or (multi)polygon perimeter.
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry : MaybeArrayLike[Union["LineString", "MultiLineString", "Polygon", "MultiPolygon"]
     **kwargs
         For other keyword-only arguments, see the
         `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
