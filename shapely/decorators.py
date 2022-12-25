@@ -80,3 +80,15 @@ def multithreading_enabled(func):
                 arr.flags.writeable = old_flag
 
     return wrapped
+
+
+def vectorize_geom(func, dtype=lib.Geometry):
+    """decorator that vectorize a function that gets a ``dtype`` or array_like as its first parameter"""
+
+    def vectorize_wrapper(geoms, *args, **kwargs):
+        if isinstance(geoms, dtype):
+            return func(geoms, *args, **kwargs)
+        else:
+            return np.vectorize(func)(geoms, *args, **kwargs)
+
+    return vectorize_wrapper
