@@ -39,6 +39,8 @@ __all__ = [
     "substring",
 ]
 
+from shapely.decorators import vectorize_geom
+
 
 class CollectionOperator:
     def shapeup(self, ob):
@@ -697,6 +699,7 @@ def clip_by_rect(geom, xmin, ymin, xmax, ymax):
     return shapely.clip_by_rect(geom, xmin, ymin, xmax, ymax)
 
 
+@vectorize_geom
 def orient(geom, sign=1.0):
     """A properly oriented copy of the given geometry.
 
@@ -706,15 +709,15 @@ def orient(geom, sign=1.0):
 
     Parameters
     ----------
-    geom : Geometry
-        The original geometry. May be a Polygon, MultiPolygon, or
+    geom : Geometry or array_like
+        The original geometry. Either a Polygon, MultiPolygon, or
         GeometryCollection.
-    sign : float, optional.
+    sign : float or array_like, optional.
         The sign of the result's signed area.
 
     Returns
     -------
-    Geometry
+    Geometry or array_like
 
     """
     if isinstance(geom, BaseMultipartGeometry):

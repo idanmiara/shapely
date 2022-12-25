@@ -326,16 +326,18 @@ class Polygon(BaseGeometry):
 shapely.lib.registry[3] = Polygon
 
 
-def orient(polygon, sign=1.0):
-    s = float(sign)
+def orient(polygon: Polygon, sign: float = 1.0):
+    """A properly oriented copy of the given geometry.
+    See the generalized function shapely.ops.orient() for full details"""
+    sign = float(sign)
     rings = []
     ring = polygon.exterior
-    if signed_area(ring) / s >= 0.0:
+    if signed_area(ring) / sign >= 0.0:
         rings.append(ring)
     else:
         rings.append(list(ring.coords)[::-1])
     for ring in polygon.interiors:
-        if signed_area(ring) / s <= 0.0:
+        if signed_area(ring) / sign <= 0.0:
             rings.append(ring)
         else:
             rings.append(list(ring.coords)[::-1])
