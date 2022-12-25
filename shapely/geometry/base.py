@@ -312,8 +312,8 @@ class BaseGeometry(shapely.Geometry):
         """Unitless area of the geometry"""
         return float(shapely.area(self))
 
-    def distance(self, other):
-        """Unitless distance to other geometry (float)"""
+    def distance(self, other) -> float:
+        """Unitless Cartesian distance to other geometry"""
         return _maybe_unpack(shapely.distance(self, other))
 
     def hausdorff_distance(self, other):
