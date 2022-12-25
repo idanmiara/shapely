@@ -1,4 +1,7 @@
-from . import unittest
+import unittest
+
+from numpy.testing import assert_array_equal
+
 from shapely.geometry import (
     Point,
     MultiPoint,
@@ -62,3 +65,13 @@ class OrientTestCase(unittest.TestCase):
         collection = GeometryCollection([polygon])
         assert orient(collection, 1) == GeometryCollection([polygon_reversed])
         assert orient(collection, -1) == GeometryCollection([polygon])
+
+    def test_vectorized(self):
+        polygon = Polygon([(0, 0), (0, 1), (1, 0)])
+        polygon_reversed = Polygon(polygon.exterior.coords[::-1])
+        linearring = LinearRing([(0, 0), (0, 1), (1, 0)])
+        geoms = [polygon, linearring]
+        # vectorized geoms with scalar sign parameter
+        assert_array_equal(orient(geoms, 1), [polygon_reversed, linearring])
+        # vectorized geoms with vector sign parameter
+        assert_array_equal(orient(geoms, [-1, 1]), [polygon, linearring])
