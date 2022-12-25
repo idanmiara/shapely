@@ -1,11 +1,11 @@
 import numpy as np
 
 from shapely import lib
+from shapely._enum import ParamEnum
 
 # include ragged array functions here for reference documentation purpose
 from shapely._ragged_array import from_ragged_array, to_ragged_array
 from shapely.decorators import requires_geos
-from shapely.enum import ParamEnum
 from shapely.errors import UnsupportedGEOSVersionError
 
 __all__ = [
