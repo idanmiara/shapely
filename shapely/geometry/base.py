@@ -326,8 +326,8 @@ class BaseGeometry(shapely.Geometry):
         return float(shapely.length(self))
 
     @property
-    def minimum_clearance(self):
-        """Unitless distance by which a node could be moved to produce an invalid geometry (float)"""
+    def minimum_clearance(self) -> float:
+        """Unitless distance by which a node could be moved to produce an invalid geometry"""
         return float(shapely.minimum_clearance(self))
 
     # Topological properties
