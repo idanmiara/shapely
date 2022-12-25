@@ -316,8 +316,8 @@ class BaseGeometry(shapely.Geometry):
         """Unitless Cartesian distance to other geometry"""
         return _maybe_unpack(shapely.distance(self, other))
 
-    def hausdorff_distance(self, other):
-        """Unitless hausdorff distance to other geometry (float)"""
+    def hausdorff_distance(self, other) -> float:
+        """Unitless hausdorff distance to other geometry"""
         return _maybe_unpack(shapely.hausdorff_distance(self, other))
 
     @property
