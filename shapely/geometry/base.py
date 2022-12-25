@@ -334,7 +334,7 @@ class BaseGeometry(shapely.Geometry):
     # ----------------------
 
     @property
-    def boundary(self):
+    def boundary(self) -> shapely.Geometry:
         """Returns a lower dimension geometry that bounds the object
 
         The boundary of a polygon is a line, the boundary of a line is a

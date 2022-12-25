@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 import numpy as np
 
 from shapely import lib
@@ -35,6 +37,11 @@ __all__ = [
     "minimum_bounding_circle",
 ]
 
+from shapely.shapely_typing import MaybeArray, MaybeArrayLike
+
+if TYPE_CHECKING:
+    from shapely import Geometry
+
 
 class BufferCapStyle(ParamEnum):
     round = 1
@@ -49,12 +56,12 @@ class BufferJoinStyle(ParamEnum):
 
 
 @multithreading_enabled
-def boundary(geometry, **kwargs):
+def boundary(geometry: MaybeArrayLike["Geometry"], **kwargs) -> MaybeArray["Geometry"]:
     """Returns the topological boundary of a geometry.
 
     Parameters
     ----------
-    geometry : Geometry or array_like
+    geometry : MaybeArrayLike["Geometry"]
         This function will return None for geometrycollections.
     **kwargs
         For other keyword-only arguments, see the
