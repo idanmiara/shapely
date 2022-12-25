@@ -4,9 +4,9 @@ import numpy as np
 
 from shapely import lib
 from shapely.decorators import requires_geos, UnsupportedGEOSVersionError
-from shapely.enum import ParamEnum
 from shapely.geometry.base import BaseGeometry
 from shapely.predicates import is_empty, is_missing
+from shapely.shapely_enum import ParamEnum
 
 __all__ = ["STRtree"]
 

@@ -5,8 +5,8 @@ from shapely import lib
 # include ragged array functions here for reference documentation purpose
 from shapely._ragged_array import from_ragged_array, to_ragged_array
 from shapely.decorators import requires_geos
-from shapely.enum import ParamEnum
 from shapely.errors import UnsupportedGEOSVersionError
+from shapely.shapely_enum import ParamEnum
 
 __all__ = [
     "from_geojson",

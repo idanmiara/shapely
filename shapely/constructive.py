@@ -2,7 +2,7 @@ import numpy as np
 
 from shapely import lib
 from shapely.decorators import multithreading_enabled, requires_geos
-from shapely.enum import ParamEnum
+from shapely.shapely_enum import ParamEnum
 
 __all__ = [
     "BufferCapStyle",

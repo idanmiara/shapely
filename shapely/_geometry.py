@@ -5,7 +5,7 @@ import numpy as np
 
 from shapely import _geometry_helpers, geos_version, lib
 from shapely.decorators import multithreading_enabled, requires_geos
-from shapely.enum import ParamEnum
+from shapely.shapely_enum import ParamEnum
 
 __all__ = [
     "GeometryType",
