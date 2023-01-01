@@ -27,11 +27,17 @@ UNARY_PREDICATES = (
     shapely.is_geometry,
     shapely.is_valid_input,
     shapely.is_prepared,
+    shapely.is_ccw,
+)
+
+UNARY_PREDICATES_WITH_KWARGS = (
+    *UNARY_PREDICATES[:-1],
     pytest.param(
         shapely.is_ccw,
         marks=pytest.mark.skipif(shapely.geos_version < (3, 7, 0), reason="GEOS < 3.7"),
     ),
 )
+
 
 BINARY_PREDICATES = (
     shapely.disjoint,
@@ -70,7 +76,7 @@ def test_unary_array(geometry, func):
     assert actual.dtype == np.bool_
 
 
-@pytest.mark.parametrize("func", UNARY_PREDICATES)
+@pytest.mark.parametrize("func", UNARY_PREDICATES_WITH_KWARGS)
 def test_unary_with_kwargs(func):
     out = np.empty((), dtype=np.uint8)
     actual = func(point, out=out)

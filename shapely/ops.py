@@ -15,8 +15,8 @@ from shapely.geometry import (
     Polygon,
     shape,
 )
-from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
-from shapely.geometry.polygon import orient as orient_
+from shapely.geometry.base import BaseGeometry
+from shapely.geometry.polygon import orient  # NOQA
 from shapely.prepared import prep
 
 __all__ = [
@@ -38,8 +38,6 @@ __all__ = [
     "orient",
     "substring",
 ]
-
-from shapely.decorators import vectorize_geom
 
 
 class CollectionOperator:
@@ -714,38 +712,3 @@ def clip_by_rect(geom, xmin, ymin, xmax, ymax):
     if geom.is_empty:
         return geom
     return shapely.clip_by_rect(geom, xmin, ymin, xmax, ymax)
-
-
-@vectorize_geom
-def orient(geom, sign=1.0):
-    """A properly oriented copy of the given geometry.
-
-    The signed area of the result will have the given sign. A sign of
-    1.0 means that the coordinates of the product's exterior rings will
-    be oriented counter-clockwise.
-
-    Parameters
-    ----------
-    geom : Geometry or array_like
-        The original geometry. Either a Polygon, MultiPolygon, or
-        GeometryCollection.
-    sign : float or array_like, optional.
-        The sign of the result's signed area.
-
-    Returns
-    -------
-    Geometry or array_like
-
-    """
-    if isinstance(geom, BaseMultipartGeometry):
-        return geom.__class__(
-            list(
-                map(
-                    lambda geom: orient(geom, sign),
-                    geom.geoms,
-                )
-            )
-        )
-    if isinstance(geom, (Polygon,)):
-        return orient_(geom, sign)
-    return geom

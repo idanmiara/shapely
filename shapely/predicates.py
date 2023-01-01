@@ -7,7 +7,7 @@ from .decorators import multithreading_enabled, requires_geos
 
 __all__ = [
     "has_z",
-    "is_ccw",
+    "_is_ccw_geos_3_7",
     "is_closed",
     "is_empty",
     "is_geometry",
@@ -71,7 +71,7 @@ def has_z(geometry, **kwargs):
 
 @requires_geos("3.7.0")
 @multithreading_enabled
-def is_ccw(geometry, **kwargs):
+def _is_ccw_geos_3_7(geometry, **kwargs):
     """Returns True if a linestring or linearring is counterclockwise.
 
     Note that there are no checks on whether lines are actually closed and
@@ -95,7 +95,7 @@ def is_ccw(geometry, **kwargs):
 
     Examples
     --------
-    >>> from shapely import LinearRing, LineString, Point
+    >>> from shapely import LinearRing, LineString, Point, is_ccw
     >>> is_ccw(LinearRing([(0, 0), (0, 1), (1, 1), (0, 0)]))
     False
     >>> is_ccw(LinearRing([(0, 0), (1, 1), (0, 1), (0, 0)]))

@@ -4,7 +4,7 @@
 import numpy as np
 
 import shapely
-from shapely.algorithms.cga import is_ccw_impl, signed_area
+from shapely.algorithms.cga import signed_area  # NOQA
 from shapely.errors import TopologicalError
 from shapely.geometry.base import BaseGeometry
 from shapely.geometry.linestring import LineString
@@ -114,7 +114,7 @@ class LinearRing(LineString):
     @property
     def is_ccw(self):
         """True is the ring is oriented counter clock-wise"""
-        return bool(is_ccw_impl()(self))
+        return bool(shapely.is_ccw(self))
 
     @property
     def is_simple(self):
@@ -326,19 +326,22 @@ class Polygon(BaseGeometry):
 shapely.lib.registry[3] = Polygon
 
 
-def orient(polygon: Polygon, sign: float = 1.0):
+def orient(geom, sign=1.0):
     """A properly oriented copy of the given geometry.
-    See the generalized function shapely.ops.orient() for full details"""
-    sign = float(sign)
-    rings = []
-    ring = polygon.exterior
-    if signed_area(ring) / sign >= 0.0:
-        rings.append(ring)
-    else:
-        rings.append(list(ring.coords)[::-1])
-    for ring in polygon.interiors:
-        if signed_area(ring) / sign <= 0.0:
-            rings.append(ring)
-        else:
-            rings.append(list(ring.coords)[::-1])
-    return Polygon(rings[0], rings[1:])
+
+    Parameters
+    ----------
+    geom : Geometry or array_like
+        The original geometry. Either a Polygon, MultiPolygon, or GeometryCollection.
+    sign : float or array_like, default 1.
+        The sign of the result's signed area.
+        A non-negative sign means that the coordinates of the geometry's exterior
+        rings will be oriented counter-clockwise.
+
+    Returns
+    -------
+    Geometry or array_like
+
+    Refer to `shapely.force_ccw` for full documentation.
+    """
+    return shapely.force_ccw(geom, np.array(sign) >= 0.0)
