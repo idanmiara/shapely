@@ -1,7 +1,7 @@
 import numpy as np
 
 from . import lib
-from .decorators import multithreading_enabled, requires_geos
+from .decorators import multithreading_enabled, requires_geos, vectorize_geom
 from .enum import ParamEnum
 
 __all__ = [
@@ -34,6 +34,8 @@ __all__ = [
     "minimum_rotated_rectangle",
     "minimum_bounding_circle",
 ]
+
+from .geos import geos_version
 
 
 class BufferCapStyle(ParamEnum):
@@ -771,7 +773,7 @@ def remove_repeated_points(geometry, tolerance=0.0, **kwargs):
 
 @requires_geos("3.7.0")
 @multithreading_enabled
-def reverse(geometry, **kwargs):
+def _reverse_geos_3_7(geometry, **kwargs):
     """Returns a copy of a Geometry with the order of coordinates reversed.
 
     If a Geometry is a polygon with interior rings, the interior rings are also
@@ -792,7 +794,7 @@ def reverse(geometry, **kwargs):
 
     Examples
     --------
-    >>> from shapely import LineString, Polygon
+    >>> from shapely import LineString, Polygon, reverse
     >>> reverse(LineString([(0, 0), (1, 2)]))
     <LINESTRING (1 2, 0 0)>
     >>> reverse(Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]))
@@ -802,6 +804,28 @@ def reverse(geometry, **kwargs):
     """
 
     return lib.reverse(geometry, **kwargs)
+
+
+@vectorize_geom
+def _reverse_fallback(geometry, **kwargs):
+    if kwargs:
+        raise NotImplementedError("reverse is not implemented with **kwargs using GEOS < 3.7")
+    if geometry is None:
+        return None
+    if not hasattr(geometry, "geom_type"):
+        raise TypeError("One of the arguments is of incorrect type")
+    geom_type = getattr(geometry, "geom_type")
+    if geom_type in ["LinearRing", "LineString"]:
+        return geometry.__class__(geometry.coords[::-1])
+    elif geom_type in ["Polygon"]:
+        rings = _reverse_fallback([geometry.exterior, *geometry.interiors])
+        return geometry.__class__(rings[0], rings[1:])
+    elif geom_type in ["MultiPolygon", "MultiLineString", "GeometryCollection"]:
+        return geometry.__class__(list(_reverse_fallback(geometry.geoms)))
+    return geometry
+
+
+reverse = _reverse_geos_3_7 if geos_version >= (3, 7, 0) else _reverse_fallback
 
 
 @requires_geos("3.10.0")

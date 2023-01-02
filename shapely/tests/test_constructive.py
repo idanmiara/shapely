@@ -375,7 +375,6 @@ def test_remove_repeated_points_invalid_type(geom, tolerance):
         shapely.remove_repeated_points(geom, tolerance)
 
 
-@pytest.mark.skipif(shapely.geos_version < (3, 7, 0), reason="GEOS < 3.7")
 @pytest.mark.parametrize(
     "geom,expected",
     [
