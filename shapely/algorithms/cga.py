@@ -62,12 +62,14 @@ def force_ccw(geometry, ccw: bool = True):
 
     Forces (Multi)Polygons to use a counter-clockwise orientation for their exterior ring,
     and a clockwise orientation for their interior rings (if ccw=True).
-    Non-polygonal geometries are returned unchanged.
+    Forces LinearRings to use a counter-clockwise/clockwise orientation (according to ccw).
+    Also processes geometries inside a GeometryCollection in the same way.
+    Other geometries are returned unchanged.
 
     Parameters
     ----------
     geometry : Geometry or array_like
-        The original geometry. Either a Polygon, MultiPolygon, or GeometryCollection.
+        The original geometry. Either a LinearRing, Polygon, MultiPolygon, or GeometryCollection.
     ccw : bool or array_like, default True
         If True, force counter-clockwise of outer rings, and clockwise inner-rings.
         Otherwise, force clockwise of outer rings, and counter-clockwise inner-rings.
@@ -78,15 +80,15 @@ def force_ccw(geometry, ccw: bool = True):
     """
     if geometry.geom_type in ["MultiPolygon", "GeometryCollection"]:
         return geometry.__class__(list(force_ccw(geometry.geoms, ccw)))
-    if geometry.geom_type == "Polygon":
-        rings = [geometry.exterior, *geometry.interiors]
-        reverse_rings = is_ccw(rings)
-        reverse_rings[0] = not reverse_rings[0]
-        if ccw:
-            reverse_rings = np.logical_not(reverse_rings)
-        rings = [
-            ring if reverse_ring else list(ring.coords)[::-1]
-            for ring, reverse_ring in zip(rings, reverse_rings)
-        ]
-        return geometry.__class__(rings[0], rings[1:])
+    elif geometry.geom_type in ["LinearRing"]:
+        return shapely.reverse_conditioned(geometry, is_ccw(geometry) != ccw)
+    elif geometry.geom_type == "Polygon":
+        rings = np.array([geometry.exterior, *geometry.interiors])
+        reverse_condition = is_ccw(rings)
+        reverse_condition[0] = not reverse_condition[0]
+        if not ccw:
+            reverse_condition = np.logical_not(reverse_condition)
+        if np.any(reverse_condition):
+            rings = shapely.reverse_conditioned(rings, reverse_condition)
+            return geometry.__class__(rings[0], rings[1:])
     return geometry
