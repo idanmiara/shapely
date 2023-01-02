@@ -27,6 +27,7 @@ __all__ = [
     "polygonize_full",
     "remove_repeated_points",
     "reverse",
+    "reverse_conditioned",
     "simplify",
     "snap",
     "voronoi_polygons",
@@ -771,6 +772,59 @@ def remove_repeated_points(geometry, tolerance=0.0, **kwargs):
     return lib.remove_repeated_points(geometry, tolerance, **kwargs)
 
 
+def reverse_conditioned(geometry, condition=True, **kwargs):
+    """Returns a copy of a Geometry with the order of coordinates reversed (`condition=True`)
+    or returnes the geometry as is (`condition=False`).
+
+    If a Geometry is a polygon with interior rings, the interior rings are also
+    reversed.
+
+    Points are unchanged. None is returned where Geometry is None.
+
+    Parameters
+    ----------
+    geometry : Geometry or array_like
+    condition: bool or array_like
+        If True, return reversed geometry,
+        Otherwise, return geometry as is.
+    **kwargs
+        For other keyword-only arguments, see the
+        `NumPy ufunc docs <https://numpy.org/doc/stable/reference/ufuncs.html#ufuncs-kwargs>`_.
+
+    See also
+    --------
+    is_ccw : Checks if a Geometry is clockwise.
+    reverse : Returns a copy of a Geometry with the order of coordinates reversed.
+
+    Examples
+    --------
+    >>> from shapely import LineString, Polygon, reverse
+    >>> ls = LineString([(0, 0), (1, 2)])
+    >>> reverse_conditioned(ls)
+    <LINESTRING (1 2, 0 0)>
+    >>> reverse_conditioned(ls, False)
+    <LINESTRING (0 0, 1 2)>
+    >>> list(reverse_conditioned(ls, [True, False]))
+    [<LINESTRING (1 2, 0 0)>, <LINESTRING (0 0, 1 2)>]
+    >>> polygon = Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
+    >>> list(reverse_conditioned([polygon, ls, polygon], [True, True, False]))
+    [<POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))>, <LINESTRING (1 2, 0 0)>, <POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))>]
+    >>> reverse_conditioned(None) is None
+    True
+    """
+    if np.all(condition):
+        return reverse(geometry, **kwargs)
+    elif np.any(condition):
+        geometry = np.array(geometry)
+        if geometry.size == 1:
+            # broadcast condition
+            geometry = np.repeat(geometry, len(condition))
+        geometries_to_reverse = geometry[condition]
+        geometries_to_reverse = reverse(geometries_to_reverse, **kwargs)
+        geometry[condition] = geometries_to_reverse
+    return geometry
+
+
 @requires_geos("3.7.0")
 @multithreading_enabled
 def _reverse_geos_3_7(geometry, **kwargs):
@@ -791,6 +845,7 @@ def _reverse_geos_3_7(geometry, **kwargs):
     See also
     --------
     is_ccw : Checks if a Geometry is clockwise.
+    reverse_conditioned : Conditioned reverse of a Geometry.
 
     Examples
     --------
