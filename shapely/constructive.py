@@ -888,7 +888,7 @@ def snap(geometry, reference, tolerance, **kwargs):
     """Snaps an input geometry to reference geometry's vertices.
 
     Vertices of the first geometry are snapped to vertices of the second.
-    geometry. The input geometries are not modified.
+    geometry, returning a new geometry; the input geometries are not modified.
     The result geometry is the input geometry with the vertices snapped.
     If no snapping occurs then the input geometry is returned unchanged.
     The tolerance is used to control where snapping is performed.
