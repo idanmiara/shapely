@@ -929,7 +929,8 @@ def snap(geometry, reference, tolerance, **kwargs):
     >>> snap(polygon, LineString([(8, 10), (8, 0)]), tolerance=5)
     <POLYGON ((0 0, 0 10, 8 10, 8 0, 0 0))>
 
-    # snapping a line to line (demonstrates cleaning imprecise coordinates)
+    You can snap one line to another, for example to clean imprecise coordinates:
+    
     >>> line1 = LineString([(0.1, 0.1), (0.49, 0.51), (1.01, 0.89)])
     >>> line2 = LineString([(0, 0), (0.5, 0.5), (1.0, 1.0)])
     >>> snap(line1, line2, 0.25)
